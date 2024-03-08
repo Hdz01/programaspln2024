@@ -22,3 +22,6 @@ print("Conteo individual:",conteo_individual)
 palabras_totales=len(tokens)
 porcentaje=100*conteo_individual/palabras_totales
 print("Porcentaje:",porcentaje,'%')
+
+
+#Hola buenas tardes 
