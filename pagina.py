@@ -16,8 +16,9 @@ def contar_palabras(url):
         print("No se pudo obtener el contenido de la página.")
         return None
 
-url = 'https://www.iic.uam.es/inteligencia/que-es-procesamiento-del-lenguaje-natural/'
+# Solicitar al usuario que ingrese la URL
+url = input("Por favor, ingrese la URL de la página web:  ")
+
 cantidad_palabras = contar_palabras(url)
 if cantidad_palabras is not None:
     print("La cantidad de palabras en la página web es:", cantidad_palabras)
-
