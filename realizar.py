@@ -5,8 +5,8 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.probability import FreqDist
 
-# URL de la página web
-url_pagina = "https://www.iic.uam.es/inteligencia/que-es-procesamiento-del-lenguaje-natural/"
+# Pedir al usuario que introduzca la URL de la página web
+url_pagina = input("Introduce la URL de la página web que deseas analizar: ")
 
 # Obtener el contenido de la página web
 respuesta = requests.get(url_pagina)
@@ -39,7 +39,7 @@ palabras_3_4_caracteres = [token for token in tokens if len(token) in (3, 4)]
 print("Palabras de 3 o 4 caracteres:", palabras_3_4_caracteres)
 
 # Contar el número de veces que aparece una palabra específica
-palabra_especifica = "ejemplo"
+palabra_especifica = input("Introduce la palabra que deseas buscar en el texto: ").lower()
 num_ocurrencias = texto.lower().count(palabra_especifica)
 print("Número de veces que aparece la palabra '{}' en el texto:".format(palabra_especifica), num_ocurrencias)
 
