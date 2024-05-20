@@ -3,51 +3,75 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 import matplotlib.pyplot as plt
+import os
 
-# Descargar recursos de nltk
+# Descarga los recursos necesarios de NLTK
 nltk.download('punkt')
 
 # Función para extraer texto de un archivo PDF
-def extract_text_from_pdf(pdf_path):
-    text = ''
+def extraer_texto(pdf_path):
+    text = ""
     with open(pdf_path, 'rb') as file:
-        reader = PyPDF2.PdfFileReader(file)
-        num_pages = reader.numPages
-        for page_num in range(num_pages):
-            page = reader.getPage(page_num)
-            text += page.extractText()
+        reader = PyPDF2.PdfReader(file)
+        for page in reader.pages:
+            text += page.extract_text()
     return text
 
 # Función para realizar análisis de texto
-def analyze_text(text):
-    # Tokenizar el texto en palabras
-    words = word_tokenize(text)
-    
-    # Contar las palabras totales
-    total_words = len(words)
-    
-    # Calcular la distribución de frecuencia de las palabras
-    fdist = FreqDist(words)
-    
-    # Obtener palabras únicas
-    unique_words = fdist.hapaxes()
-    
+def analizar_texto(texto):
+    # Tokenización de palabras
+    palabras = word_tokenize(texto)
+
+    # Contar palabras totales
+    total_palabras = len(palabras)
+
+    # Obtener palabras únicas y contar su frecuencia
+    fdist = FreqDist(palabras)
+    palabras_unicas = fdist.hapaxes()
+
+    # Distribución de frecuencia
+    distribucion_frecuencia = fdist.most_common(20)
+
     # Graficar las 20 palabras más comunes
-    fdist.plot(20, cumulative=False)
+    palabras_comunes, frecuencias = zip(*distribucion_frecuencia)
+    plt.figure(figsize=(10, 6))
+    plt.bar(palabras_comunes, frecuencias)
+    plt.xlabel('Palabras')
+    plt.ylabel('Frecuencia')
+    plt.title('20 Palabras Más Comunes')
+    plt.xticks(rotation=45)
     plt.show()
-    
-    return total_words, unique_words, fdist
 
-# Ruta del archivo PDF
-pdf_path = '2.pdf'
+    return total_palabras, palabras_unicas, distribucion_frecuencia
 
-# Extraer texto del PDF
-text = extract_text_from_pdf(pdf_path)
+# Función principal
+def main():
+    # Solicitar al usuario que ingrese la ruta del archivo PDF
+    pdf_path = input("Por favor, ingresa la ruta del archivo PDF: ").strip()
 
-# Realizar análisis de texto
-total_words, unique_words, fdist = analyze_text(text)
+    # Verificar si la ruta ingresada es válida
+    if not os.path.isfile(pdf_path):
+        print("La ruta del archivo PDF no es válida.")
+        return
 
-# Imprimir resultados
-print("Número total de palabras:", total_words)
-print("Palabras únicas:", len(unique_words))
-print("Distribución de frecuencia:", fdist.most_common(20))
+    # Extraer texto del PDF
+    try:
+        texto_extraido = extraer_texto(pdf_path)
+    except Exception as e:
+        print("Error al extraer texto del PDF:", e)
+        return
+
+    # Realizar análisis de texto
+    try:
+        total_palabras, palabras_unicas, distribucion_frecuencia = analizar_texto(texto_extraido)
+    except Exception as e:
+        print("Error al analizar el texto:", e)
+        return
+
+    # Resultados
+    print("Total de palabras:", total_palabras)
+    print("Palabras que aparecen una sola vez:", palabras_unicas)
+    print("Distribución de frecuencia de las 20 palabras más comunes:", distribucion_frecuencia)
+
+if __name__ == "__main__":
+    main()
